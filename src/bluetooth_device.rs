@@ -7,11 +7,17 @@ use std::error::Error;
 static DEVICE_INTERFACE: &'static str = "org.bluez.Device1";
 
 #[derive(Clone, Debug)]
+/// Representation of a Bluetooth Device.
 pub struct BluetoothDevice {
+    /// The Object Path used to represent this device across D-Bus.
     object_path: String,
 }
 
 impl BluetoothDevice {
+    /// Create a new instance of `BluetoothDevice` to represent a device at a given D-Bus
+    /// Object Path.
+    ///
+    /// This does not check whether the device really exists.
     pub fn new(object_path: String)
            -> BluetoothDevice {
         BluetoothDevice {
@@ -40,12 +46,22 @@ impl BluetoothDevice {
  * Properties
  */
     // http://git.kernel.org/cgit/bluetooth/bluez.git/tree/doc/device-api.txt#n105
+    /// The Bluetooth device address of the remote device.
     pub fn get_address(&self) -> Result<String, Box<Error>> {
         let address = try!(self.get_property("Address"));
         Ok(String::from(address.inner::<&str>().unwrap()))
     }
 
     // http://git.kernel.org/cgit/bluetooth/bluez.git/tree/doc/device-api.txt#n109
+    /// The Bluetooth remote name. This value can not be
+    /// changed. Use the Alias property instead.
+    ///
+    ///	This value is only present for completeness. It is
+    ///	better to always use the Alias property when
+    ///	displaying the devices name.
+    ///
+    /// If the Alias property is unset, it will reflect
+    /// this value which makes it more convenient.
     pub fn get_name(&self) -> Result<String, Box<Error>> {
         let name = try!(self.get_property("Name"));
         Ok(String::from(name.inner::<&str>().unwrap()))
@@ -58,6 +74,14 @@ impl BluetoothDevice {
     }
 
     // http://git.kernel.org/cgit/bluetooth/bluez.git/tree/doc/device-api.txt#n126
+    /// The Bluetooth class of device of the remote device.
+    ///
+    /// At the time of this writing, the Bluetooth norm defines 4 classes, which differ by
+    /// range/power:
+    /// Class 1 ~100m
+    /// Class 2 ~10m
+    /// Class 3 ~1m
+    /// Class 4 ~.5m
     pub fn get_class(&self) -> Result<u32, Box<Error>> {
         let class = try!(self.get_property("Class"));
         Ok(class.inner::<u32>().unwrap())

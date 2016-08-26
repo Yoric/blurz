@@ -8,6 +8,7 @@ pub use bluetooth_gatt_descriptor::BluetoothGATTDescriptor;
 pub use bluetooth_gatt_service::BluetoothGATTService;
 pub use bluetooth_discovery_session::BluetoothDiscoverySession;
 
+/// Representation of a remote device.
 pub mod bluetooth_device;
 pub mod bluetooth_adapter;
 pub mod bluetooth_gatt_characteristic;
